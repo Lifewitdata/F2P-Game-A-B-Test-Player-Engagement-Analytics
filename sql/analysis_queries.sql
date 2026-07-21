@@ -1,6 +1,6 @@
 -- ============================================================
 -- Bingo F2P Game Analytics — Business Query Library (MySQL)
--- 25 queries covering engagement, retention, A/B testing,
+--  engagement, retention, A/B testing,
 -- monetization, and in-game economy health.
 -- ============================================================
 
