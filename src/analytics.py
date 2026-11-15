@@ -169,9 +169,14 @@ def segment_retention(
                 rows.append((
                     "room_type", str(room), variant, day, n, x, x / n if n else np.nan
                 ))
-    return pd.DataFrame(rows, columns=[
+    result = pd.DataFrame(rows, columns=[
         "dimension", "segment", "variant", "day", "players", "active_players", "retention"
     ])
+    keys = ["dimension", "segment", "day"]
+    b = result.loc[result.variant.eq("B")].set_index(keys).retention
+    control = result.loc[result.variant.eq("A")].set_index(keys).retention
+    lift = ((b - control) * 100).rename("lift_pp")
+    return result.merge(lift, left_on=keys, right_index=True, how="left")
 
 
 def experiment_design(baseline=0.042, mde=0.0114, alpha=0.05, power=0.80):
@@ -219,4 +224,6 @@ def business_scenarios(players, sessions, transactions, hybrid_share=0.35):
         d30_retention_revenue_at_risk=retention_revenue_at_risk,
         observed_arpu_a=float(a.arpu),
         observed_arpu_b=float(b.arpu),
+        observed_arpu_gap_usd=float(b.arpu-a.arpu),
+        observed_revenue_delta_same_population=float(b_revenue-a_revenue),
     )
