@@ -14,7 +14,7 @@ The archived experiment compares a steady-reward wheel (A) with a high-variance 
 | D7 retention | 24.96% | 24.96% | **~0.00pp** | 0.999531 |
 | D30 retention | 4.16% | 3.03% | **−1.14pp** | 0.000073 |
 
-The rebuild preserves these three checkpoint counts so the readout remains repeatable. The shared analytics module adds 95% confidence intervals and Holm correction across D1/D7/D30; D30 is the pre-registered primary endpoint.
+The rebuild preserves these three checkpoint counts so the readout remains repeatable. The shared analytics module adds 95% confidence intervals and Holm correction across D1/D7/D30; D30 is the pre-registered primary endpoint. The design requires 4,225 players per arm (4,648 with a 10% identity-loss buffer), with a fixed historical readout of 2026-03-02.
 
 ### Commercial view (30-day IAP)
 
