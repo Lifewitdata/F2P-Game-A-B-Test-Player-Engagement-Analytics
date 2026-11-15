@@ -62,3 +62,17 @@ def test_generator_rebuilds_same_events_from_same_seed():
     pd.testing.assert_frame_equal(first_creative, second_creative)
     assert {"assigned", "assignment_timestamp", "exposed", "exposure_timestamp",
             "impressions", "clicks", "ctr"} <= set(first_creative.columns)
+
+
+
+def test_room_type_segment_contains_lift():
+    from src.analytics import segment_retention
+    players, sessions = sample_data()
+    rounds = pd.DataFrame({
+        "player_id": [1, 3, 3],
+        "room_type": ["classic", "classic", "jackpot"],
+    })
+    segments = segment_retention(players, sessions, rounds=rounds)
+    room = segments.loc[segments.dimension.eq("room_type")]
+    assert set(room.segment) == {"classic", "jackpot"}
+    assert "lift_pp" in room.columns
