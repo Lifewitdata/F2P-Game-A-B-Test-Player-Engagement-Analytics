@@ -100,9 +100,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=DATA)
     parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument("--limit-players", type=int, default=None,
+                        help="Optional player cap for fast CI smoke tests")
     args = parser.parse_args()
     args.data_dir.mkdir(parents=True, exist_ok=True)
     players = pd.read_csv(args.data_dir / "players.csv", parse_dates=["install_date"])
+    if args.limit_players is not None:
+        players = players.head(args.limit_players).copy()
     sessions, rounds = generate_events(players, args.seed)
     creative = generate_creative_test(players, args.seed + 1)
     sessions.to_csv(args.data_dir / "sessions.csv", index=False)
