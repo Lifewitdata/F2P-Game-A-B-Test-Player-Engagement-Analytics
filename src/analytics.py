@@ -128,7 +128,7 @@ def monetization_by_day(players, transactions, days=range(31)):
 
 
 def segment_retention(
-    players, sessions,
+    players, sessions, rounds=None,
     dimensions=("country", "platform", "acquisition_channel", "spend_tier")
 ):
     cohort = players.loc[players.ab_test_variant.isin(["A", "B"])].copy()
@@ -151,6 +151,23 @@ def segment_retention(
                 x = int(group.player_id.isin(active).sum())
                 rows.append((
                     dimension, str(segment), variant, day, n, x, x / n if n else np.nan
+                ))
+    # Room type is an exposure/behavioral segment, not a pre-treatment player attribute.
+    # These cuts are descriptive and may be post-treatment; do not treat them as causal.
+    if rounds is not None:
+        room_players = rounds[["player_id", "room_type"]].drop_duplicates()
+        room_base = cohort[["player_id", "ab_test_variant"]].merge(
+            room_players, on="player_id", how="inner"
+        )
+        for (room, variant), group in room_base.groupby(
+            ["room_type", "ab_test_variant"], dropna=False
+        ):
+            for day in (1, 7, 30):
+                active = set(events.loc[events.day.eq(day), "player_id"])
+                n = group.player_id.nunique()
+                x = int(group.player_id.isin(active).sum())
+                rows.append((
+                    "room_type", str(room), variant, day, n, x, x / n if n else np.nan
                 ))
     return pd.DataFrame(rows, columns=[
         "dimension", "segment", "variant", "day", "players", "active_players", "retention"
