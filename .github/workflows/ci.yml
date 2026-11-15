@@ -15,5 +15,5 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - run: pytest -q
-      - run: python generate_data.py
+      - run: python generate_data.py --limit-players 500
       - run: python -c "import pandas as pd; assert len(pd.read_csv('data/sessions.csv')); assert len(pd.read_csv('data/bingo_rounds.csv'))"
