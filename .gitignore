@@ -1,0 +1,11 @@
+# Locally rebuilt event-level data
+/data/sessions.csv
+/data/bingo_rounds.csv
+/data/creative_exposures.csv
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
