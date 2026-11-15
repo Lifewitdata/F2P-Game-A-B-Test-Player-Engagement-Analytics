@@ -88,11 +88,13 @@ def generate_creative_test(players: pd.DataFrame, seed: int = SEED + 1):
         ctr = 0.085 if creative == creatives[0] else 0.095
         clicks = int(rng.binomial(impressions, ctr)) if impressions else 0
         observed_ctr = clicks / impressions if impressions else np.nan
-        rows.append((int(p.player_id), creative, assigned, exposed,
-                     impressions, clicks, observed_ctr))
+        assignment_time = pd.Timestamp(p.install_date)
+        exposure_time = assignment_time + pd.Timedelta(minutes=5) if exposed else pd.NaT
+        rows.append((int(p.player_id), creative, assigned, assignment_time,
+                     exposed, exposure_time, impressions, clicks, observed_ctr))
     return pd.DataFrame(rows, columns=[
-        "player_id", "creative_variant", "assigned", "exposed",
-        "impressions", "clicks", "ctr"
+        "player_id", "creative_variant", "assigned", "assignment_timestamp",
+        "exposed", "exposure_timestamp", "impressions", "clicks", "ctr"
     ])
 
 
