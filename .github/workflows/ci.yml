@@ -1,0 +1,19 @@
+name: analytics-ci
+on:
+  push:
+    branches: [main, "improve/**"]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+      - run: python generate_data.py
+      - run: python -c "import pandas as pd; assert len(pd.read_csv('data/sessions.csv')); assert len(pd.read_csv('data/bingo_rounds.csv'))"
