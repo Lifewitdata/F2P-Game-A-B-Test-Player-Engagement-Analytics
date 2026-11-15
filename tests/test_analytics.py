@@ -43,3 +43,22 @@ def test_arpu_includes_zero_spenders_and_has_ltv():
     out = monetization_by_day(players, transactions, [30])
     assert out.loc[out.variant.eq("A"), "arpu"].iloc[0] == 5.0
     assert "cumulative_ltv" in out.columns
+
+
+def test_generator_rebuilds_same_events_from_same_seed():
+    from generate_data import generate_events, generate_creative_test
+    players = pd.DataFrame({
+        "player_id": range(1, 11),
+        "install_date": pd.to_datetime(["2026-01-01"] * 10),
+        "acquisition_channel": ["organic"] * 10,
+        "ab_test_variant": ["A"] * 5 + ["B"] * 5,
+    })
+    first_sessions, first_rounds = generate_events(players, seed=123)
+    second_sessions, second_rounds = generate_events(players, seed=123)
+    pd.testing.assert_frame_equal(first_sessions, second_sessions)
+    pd.testing.assert_frame_equal(first_rounds, second_rounds)
+    first_creative = generate_creative_test(players, seed=456)
+    second_creative = generate_creative_test(players, seed=456)
+    pd.testing.assert_frame_equal(first_creative, second_creative)
+    assert {"assigned", "assignment_timestamp", "exposed", "exposure_timestamp",
+            "impressions", "clicks", "ctr"} <= set(first_creative.columns)
