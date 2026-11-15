@@ -7,6 +7,10 @@ def sample_data():
         "player_id": [1, 2, 3, 4],
         "install_date": pd.to_datetime(["2026-01-01"] * 4),
         "ab_test_variant": ["A", "A", "B", "B"],
+        "country": ["IN", "US", "IN", "US"],
+        "platform": ["iOS", "Android", "iOS", "Android"],
+        "acquisition_channel": ["organic", "paid_social", "organic", "paid_search"],
+        "spend_tier": ["non_payer", "minnow", "non_payer", "dolphin"],
     })
     sessions = pd.DataFrame({
         "player_id": [3, 3],
